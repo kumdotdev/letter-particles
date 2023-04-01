@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Letter Particles Web Component</title>
+  <style>
+    body {
+      margin: 0;
+      overscroll-behavior: none;
+      background-color: #222;
+      color: gainsboro;
+      min-height: 100vh;
+      display: grid;
+      place-content: center;
+      font-family: Helvetica, sans-serif;
+    }
+
+    h1 {
+      font-size: 8vw;
+    }
+
+    span {
+      display: inline-block;
+    }
+
+    p {
+      text-align: center;
+    }
+
+    section {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+    }
+
+    .centered {
+      display: grid;
+      place-content: center;
+    }
+
+  </style>
+  <script src="./letter-particles.js" type="module"></script>
+</head>
+
+<body>
+  <section>
+    <div class="centered">
+      <h1>
+        <letter-particles>Demo Letter Particles</letter-particles>
+      </h1>
+    </div>
+    <p>Scroll to next section</p>
+  </section>
+  <section>
+    <div class="centered">
+      <h1>
+        Only <letter-particles>Part</letter-particles> Of Headline
+      </h1>
+    </div>
+    <p>Scroll to next section</p>
+  </section>
+  <section>
+    <div class="centered">
+      <letter-particles style="font-size:6vw">Scrolled Into View</letter-particles>
+    </div>
+  </section>
+</body>
+
+</html>
