@@ -101,12 +101,12 @@ class Letter {
   constructor(element, mouse) {
     this.element = element;
     this.mouse = mouse;
-    this.opacity = 0;
+    this.elementPos = new Vector();
+    this.opacity = 1;
     this.target = new Vector();
     this.pos = new Vector();
     this.vel = new Vector();
     this.acc = new Vector();
-    this.maxMagnitude = 30;
 
     // tick, tick
     const MS_PER_UPDATE = 4;
@@ -135,21 +135,44 @@ class Letter {
       (Math.random() - 0.5) * window.innerHeight,
     );
     this.vel = new Vector(
-      (Math.random() - 0.5) * 3900,
-      (Math.random() - 0.5) * 3900,
+      (Math.random() - 0.5) * 5000,
+      (Math.random() - 0.5) * 5000,
     );
   }
 
+  applyForce(force) {
+    this.acc.addTo(force);
+  }
+
+  behavoir() {
+    const arrive = this.target.subtract(this.pos);
+    // const distance = arrive.getMagnitude();
+    arrive.setMagnitude(60);
+    this.applyForce(arrive);
+
+    this.elementPos = new Vector(
+      this.element.getBoundingClientRect().x +
+        this.element.getBoundingClientRect().width / 2,
+      this.element.getBoundingClientRect().y +
+        this.element.getBoundingClientRect().height / 2,
+    );
+    const avoidMouse = this.pos.subtract(this.mouse.subtract(this.elementPos));
+    if (
+      avoidMouse.getMagnitude() < this.element.getBoundingClientRect().height
+    ) {
+      avoidMouse.multiplyBy(1);
+    } else {
+      avoidMouse.multiplyBy(0);
+    }
+    this.applyForce(avoidMouse);
+  }
+
   update(dt) {
-    this.pos.addTo(this.vel, dt);
-    this.acc = this.target.subtract(this.pos);
-    // this.acc = this.mouse.add(this.pos);
-    // this.acc.multiplyBy(-1);
-    // console.log(this.acc.getMagnitude());
-    this.opacity = 1 - this.acc.getMagnitude() / 300;
-    this.acc.setMagnitude(this.maxMagnitude);
+    this.behavoir();
     this.vel.addTo(this.acc);
-    this.vel.limit(0.98, 0.98);
+    this.vel.limit(0.92, 0.92);
+    this.pos.addTo(this.vel, dt);
+    this.acc.multiplyBy(0);
   }
   draw() {
     this.element.style.transform = `
@@ -175,8 +198,8 @@ class LetterParticles extends HTMLElement {
     letters.forEach((letter) => {
       const element = document.createElement('span');
       element.innerHTML = letter !== ' ' ? letter : '&nbsp;';
-      this.letters.add(new Letter(element, mouse));
       this.appendChild(element);
+      this.letters.add(new Letter(element, mouse));
     });
 
     const callback = (entries) => {
